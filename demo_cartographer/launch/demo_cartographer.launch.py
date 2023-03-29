@@ -58,21 +58,54 @@ def generate_launch_description():
     control_node = Node(
         package='teleop_twist_keyboard',
         executable='teleop_twist_keyboard',
-        arguments=['/model/']
+        arguments=['/cmd_vel']
     )
     '''
+
+
+    # map -> odom
+    fixed_frame = Node(
+        package='demo_cartographer',
+        executable='fixed_frame_tf2_broadcaster',
+        name='fixed_broadcaster',
+    )
+
+    # odom -> base_link
+    odom2base_link =  Node(
+            package='tf2_ros',
+            executable='static_transform_publisher',
+            name='odom2base_link',
+            arguments = ['0', '0', '0', '0', '0', '0', 'demo_odom', 'test_base_link']
+        )
+
+
+    # base_link -> imu
+    baseLink2imu = Node(
+            package='tf2_ros',
+            executable='static_transform_publisher',
+            name='base_link2imu',
+            arguments = ['0.14 ', '0.02', '0.25', '0', '0', '0', 'test_base_link', 'tugbot/imu_link/imu']
+        )
+
+    # base_link->laser
+    baseLink2laser = Node(
+            package='tf2_ros',
+            executable='static_transform_publisher',
+            name='base_link2laser',
+            arguments = ['-0.1855', '0', '0.5318', '0', '0', '0', 'test_base_link', 'tugbot/scan_omni/scan_omni']
+        )
+
+
     # Bridge
     bridge_nodes = Node(
         package='ros_ign_bridge',
         executable='parameter_bridge',
         arguments=['/model/tugbot/cmd_vel@geometry_msgs/msg/Twist]ignition.msgs.Twist',
-                   '/imu@sensor_msgs/msg/Imu[ignition.msgs.IMU',
-                   '/world/world_demo/model/tugbot/link/scan_omni/sensor/scan_omni/scan@sensor_msgs/msg/LaserScan[ignition.msgs.LaserScan',
-                   '/model/tugbot/pose@geometry_msgs/msg/Pose@ignition.msgs.Pose',
-                   '/model/tugbot/tf@geometry_msgs/msg/Transform@ignition.msgs.Pose'],
+                   '/imu@sensor_msgs/msg/Imu@ignition.msgs.IMU',
+                   '/world/world_demo/model/tugbot/link/scan_omni/sensor/scan_omni/scan@sensor_msgs/msg/LaserScan@ignition.msgs.LaserScan',
+                   ],                
         remappings=[
-            ('/cmd_vel','/model/tugbot/cmd_vel'),
-            ('/laser_scan','/world/world_demo/model/tugbot/link/scan_omni/sensor/scan_omni/scan'),
+            ('/world/world_demo/model/tugbot/link/scan_omni/sensor/scan_omni/scan','/scan'),
         ],
         output='screen'
     )
@@ -89,6 +122,10 @@ def generate_launch_description():
     ld.add_action(occupancy_grid_node)
     ld.add_action(rviz_node)
     ld.add_action(bridge_nodes)
+    #ld.add_action(fixed_frame)
+    ld.add_action(baseLink2laser)
+    ld.add_action(baseLink2imu)
+    ld.add_action(odom2base_link)
     '''
     ld.add_action(control_node)
     '''

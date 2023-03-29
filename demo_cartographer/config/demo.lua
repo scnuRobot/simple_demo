@@ -1,20 +1,20 @@
-3include "map_builder.lua"
+include "map_builder.lua"
 include "trajectory_builder.lua"
 
 options = {
   map_builder = MAP_BUILDER,
   trajectory_builder = TRAJECTORY_BUILDER,
-  map_frame = "map",
-  tracking_frame = "base_link",
+  map_frame = "demo_map",
+  tracking_frame = "tugbot/imu_link/imu",
   -- base_link改为odom,发布map到odom之间的位姿态
-  published_frame = "odom",
-  odom_frame = "odom",
+  published_frame = "test_base_link",
+  odom_frame = "demo_odom",
   -- true改为false，不用提供里程计数据
-  provide_odom_frame = false,
+  provide_odom_frame = true,
   -- false改为true，仅发布2D位资
   publish_frame_projected_to_2d = true,
   -- false改为true，使用里程计数据
-  use_odometry = true,
+  use_odometry = false,
   use_nav_sat = false,
   use_landmarks = false,
   -- 0改为1,使用一个雷达
@@ -42,11 +42,11 @@ MAP_BUILDER.use_trajectory_builder_2d = true
 -- 0改成0.10,比机器人半径小的都忽略
 TRAJECTORY_BUILDER_2D.min_range = 0.10
 -- 30改成3.5,限制在雷达最大扫描范围内，越小一般越精确些
-TRAJECTORY_BUILDER_2D.max_range = 3.5
+TRAJECTORY_BUILDER_2D.max_range = 30
 -- 5改成3,传感器数据超出有效范围最大值
-TRAJECTORY_BUILDER_2D.missing_data_ray_length = 3.
+TRAJECTORY_BUILDER_2D.missing_data_ray_length = 5.
 -- true改成false,不使用IMU数据，大家可以开启，然后对比下效果
-TRAJECTORY_BUILDER_2D.use_imu_data = false
+TRAJECTORY_BUILDER_2D.use_imu_data = true
 -- false改成true,使用实时回环检测来进行前端的扫描匹配
 TRAJECTORY_BUILDER_2D.use_online_correlative_scan_matching = true 
 -- 1.0改成0.1,提高对运动的敏感度

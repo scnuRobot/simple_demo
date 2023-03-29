@@ -1,6 +1,6 @@
-# bridge
-## 2d 雷达
+# ign_ros_bridge usage
 
+## 2d 雷达
 ### omni lidar
 ```
 source /opt/ros/foxy/setup.bash
